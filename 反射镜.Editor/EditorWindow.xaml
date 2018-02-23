@@ -1,0 +1,107 @@
+﻿<Window x:Class="反射镜.Editor.EditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:ui="clr-namespace:反射镜.UI;assembly=反射镜.UI"
+		xmlns:local="clr-namespace:反射镜.Editor"
+        mc:Ignorable="d"
+        Title="编辑器" Height="480" Width="691" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" ResizeMode="CanMinimize">
+	<Window.Resources>
+		<local:EditorCommands x:Key="EditorCommands"></local:EditorCommands>
+	</Window.Resources>
+
+	<ui:GameEditor x:Name="editor" Background="#606060" EditorCheckerboard="{Binding ElementName=editorCheckerboard}" EndlessCheckerboard="{Binding ElementName=endlessCheckerboard}">
+		<ui:GameEditor.Selector>
+			<Border Background="#305050FF" BorderBrush="#5050FF" BorderThickness="1"/>
+		</ui:GameEditor.Selector>
+
+		<ui:EditorCheckerboard x:Name="editorCheckerboard" Canvas.Left="10" Canvas.Top="10" Background="{Binding Background, ElementName=editor}" Rows="15" Columns="15" ui:GameEditor.Editor="{Binding ElementName=editor}">
+			<ui:EditorCheckerboard.Resources>
+				<ContextMenu x:Key="MirrorMenu" DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}">
+					<ContextMenu.Resources>
+						<Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+							<Setter Property="CommandParameter" Value="{Binding}"/>
+						</Style>
+					</ContextMenu.Resources>
+					<MenuItem>
+						<MenuItem.Style>
+							<Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding Freedom}" Value="False">
+										<Setter Property="Header" Value="取消固定"/>
+										<Setter Property="Command" Value="{Binding CancelFixed, Source={StaticResource EditorCommands}}"/>
+									</DataTrigger>
+								</Style.Triggers>
+								<Setter Property="Header" Value="固定"/>
+								<Setter Property="Command" Value="{Binding Fixed, Source={StaticResource EditorCommands}}"/>
+							</Style>
+						</MenuItem.Style>
+					</MenuItem>
+					<Separator Style="{StaticResource {x:Type Separator}}"/>
+					<MenuItem Header="顺时针旋转45°" Command="{Binding RotateDirection315, Source={StaticResource EditorCommands}}"></MenuItem>
+					<MenuItem Header="旋转180°" Command="{Binding RotateDirection180, Source={StaticResource EditorCommands}}"></MenuItem>
+					<MenuItem Header="重置角度" Command="{Binding ResetDirection, Source={StaticResource EditorCommands}}"></MenuItem>
+					<Separator Style="{StaticResource {x:Type Separator}}"/>
+					<MenuItem Header="同类型全部固定" Command="{Binding AllTypeFixed, Source={StaticResource EditorCommands}}"/>
+					<MenuItem Header="同类型全部取消固定" Command="{Binding AllTypeCancelFixed, Source={StaticResource EditorCommands}}"/>
+					<Separator Style="{StaticResource {x:Type Separator}}"/>
+					<MenuItem Header="选中同类型" Command="{Binding AllTypeSelect, Source={StaticResource EditorCommands}}"/>
+				</ContextMenu>
+
+				<ContextMenu x:Key="SelectedMenu" DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}">
+					<ContextMenu.Resources>
+						<Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+							<Setter Property="CommandParameter" Value="{Binding}"/>
+						</Style>
+					</ContextMenu.Resources>
+
+					<MenuItem Header="固定 (选中)" Command="{Binding SelectedFixed, Source={StaticResource EditorCommands}}"/>
+					<MenuItem Header="取消固定 (选中)" Command="{Binding SelectedCancelFixed, Source={StaticResource EditorCommands}}"/>
+					<Separator Style="{StaticResource {x:Type Separator}}"/>
+					<MenuItem Header="逆时针旋转45° (选中)" Command="{Binding SelectedRotateDirection45, Source={StaticResource EditorCommands}}"></MenuItem>
+					<MenuItem Header="顺时针旋转45° (选中)" Command="{Binding SelectedRotateDirection315, Source={StaticResource EditorCommands}}"></MenuItem>
+					<MenuItem Header="旋转180° (选中)" Command="{Binding SelectedRotateDirection180, Source={StaticResource EditorCommands}}"></MenuItem>
+					<MenuItem Header="重置角度 (选中)" Command="{Binding SelectedResetDirection, Source={StaticResource EditorCommands}}"></MenuItem>
+					<Separator Style="{StaticResource {x:Type Separator}}"/>
+					<MenuItem Header="删除 (选中)" Command="{Binding SelectedRemoveAll, Source={StaticResource EditorCommands}}"></MenuItem>
+				</ContextMenu>
+
+				<Style TargetType="{x:Type ui:EditorMirror}" BasedOn="{StaticResource {x:Type ui:EditorMirror}}">
+					<Style.Triggers>
+						<Trigger Property="IsSelected" Value="True">
+							<Setter Property="ContextMenu" Value="{x:Null}"/>
+						</Trigger>
+					</Style.Triggers>
+					<Setter Property="ContextMenu" Value="{StaticResource MirrorMenu}"/>
+				</Style>
+
+				<Style TargetType="{x:Type ui:EditorCheckerboard}">
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding (ui:GameEditor.Editor).HasSelection, RelativeSource={RelativeSource Self}}" Value="True">
+							<Setter Property="ContextMenu" Value="{StaticResource SelectedMenu}"/>
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</ui:EditorCheckerboard.Resources>
+		</ui:EditorCheckerboard>
+
+		<ui:EndlessCheckerboard x:Name="endlessCheckerboard" Background="{Binding Background, ElementName=editor}" Canvas.Left="440" Canvas.Top="10" ui:GameEditor.Editor="{Binding ElementName=editor}">
+			<ui:EndlessCheckerboard.Resources>
+				<ContextMenu x:Key="MirrorBrushMenu" DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}">
+					<MenuItem Header="笔刷模式" Command="{Binding BrushMode, Source={StaticResource EditorCommands}}" CommandParameter="{Binding}"/>
+				</ContextMenu>
+
+				<Style TargetType="{x:Type ui:EditorMirror}" BasedOn="{StaticResource {x:Type ui:EditorMirror}}">
+					<Setter Property="ContextMenu" Value="{StaticResource MirrorBrushMenu}"/>
+				</Style>
+			</ui:EndlessCheckerboard.Resources>
+		</ui:EndlessCheckerboard>
+		
+		<Button Content="复制咒语(编辑模式)" ToolTip="所有物件以及位置都包含在咒语里。" Canvas.Left="440" Canvas.Top="210" Width="224" BorderThickness="1" Command="{Binding EncodeToClipboardForEdit, Source={StaticResource EditorCommands}}" CommandParameter="{Binding ElementName=editor}" Height="25"/>
+		<Button Content="复制咒语(游戏模式)" ToolTip="所有物件都包含在咒语里，但只有固定物件才有位置信息。" Canvas.Left="440" Canvas.Top="240" Width="224" BorderThickness="1" Command="{Binding EncodeToClipboardForPlay, Source={StaticResource EditorCommands}}" CommandParameter="{Binding ElementName=editor}" Height="25"/>
+		<Button Content="粘贴咒语" ToolTip="使用剪切板中的咒语产生新地图。" Canvas.Left="440" Canvas.Top="270" Width="224" BorderThickness="1" Command="{Binding DecodeFromClipboard, Source={StaticResource EditorCommands}}" CommandParameter="{Binding ElementName=editor}" Height="25"/>
+
+	</ui:GameEditor>
+</Window>

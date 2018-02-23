@@ -1,0 +1,160 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:反射镜.UI">
+
+	<Style TargetType="{x:Type local:Chessman}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type local:Chessman}">
+					<Border BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}"
+							Background="{TemplateBinding Background}">
+						<ContentPresenter RenderOptions.EdgeMode="Unspecified" RenderOptions.BitmapScalingMode="HighQuality"/>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<Style TargetType="{x:Type local:Mirror}" BasedOn="{StaticResource {x:Type local:Chessman}}"/>
+	<Style TargetType="{x:Type local:EditorMirror}" BasedOn="{StaticResource {x:Type local:Mirror}}"/>
+	<Style TargetType="{x:Type local:PlayMirror}" BasedOn="{StaticResource {x:Type local:Mirror}}"/>
+
+	<SolidColorBrush x:Key="MenuForegroundBrush">#40C0C0C0</SolidColorBrush>
+	<SolidColorBrush x:Key="MenuTextForegroundBrush">#D0D0D0</SolidColorBrush>
+
+	<Style TargetType="{x:Type MenuItem}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type MenuItem}">
+					<Border x:Name="templateRoot" Padding="0 3 0 3" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="5"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="30"/>
+								<ColumnDefinition SharedSizeGroup="MenuItemIGTColumnGroup" Width="Auto"/>
+								<ColumnDefinition Width="3"/>
+							</Grid.ColumnDefinitions>
+							<ContentPresenter x:Name="menuHeaderContainer" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Grid.Column="1" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" HorizontalAlignment="Left" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+							<TextBlock x:Name="menuGestureText" Grid.Column="3" Margin="{TemplateBinding Padding}" Opacity="0.7" Text="{TemplateBinding InputGestureText}" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"/>
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="Icon" Value="{x:Null}">
+						</Trigger>
+						<Trigger Property="IsChecked" Value="True">
+						</Trigger>
+						<Trigger Property="IsHighlighted" Value="True">
+							<Setter Property="Background" TargetName="templateRoot" Value="#50808080"/>
+							<!--<Setter Property="BorderBrush" TargetName="templateRoot" Value="#A0A0A0C0"/>-->
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="#FF707070"/>
+						</Trigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsHighlighted" Value="True"/>
+								<Condition Property="IsEnabled" Value="False"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Background" TargetName="templateRoot" Value="#0A000000"/>
+							<Setter Property="BorderBrush" TargetName="templateRoot" Value="#21000000"/>
+						</MultiTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Foreground" Value="{StaticResource MenuTextForegroundBrush}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
+
+	<Style TargetType="{x:Type ContextMenu}">
+		<Setter Property="SnapsToDevicePixels" Value="True" />
+		<Setter Property="OverridesDefaultStyle" Value="True" />
+		<Setter Property="Grid.IsSharedSizeScope" Value="True" />
+		<Setter Property="HasDropShadow" Value="True" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ContextMenu}">
+					<Border x:Name="Border"
+							Background="#202020"
+							BorderBrush="{StaticResource MenuForegroundBrush}"
+							BorderThickness="1">
+						<StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style TargetType="{x:Type Separator}">
+		<Setter Property="Background" Value="{StaticResource MenuForegroundBrush}"/>
+		<Setter Property="Margin" Value="3,2,3,2"/>
+		<Setter Property="Focusable" Value="False"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Separator}">
+					<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Height="1" SnapsToDevicePixels="true"/>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="FocusVisual">
+		<Setter Property="Control.Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<SolidColorBrush x:Key="Button.Static.Background" Color="#202020"/>
+	<SolidColorBrush x:Key="Button.Static.Border" Color="#40C0C0C0"/>
+	<SolidColorBrush x:Key="Button.MouseOver.Background" Color="#404040"/>
+	<SolidColorBrush x:Key="Button.MouseOver.Border" Color="#40C0C0C0"/>
+	<SolidColorBrush x:Key="Button.Pressed.Background" Color="#606060"/>
+	<SolidColorBrush x:Key="Button.Pressed.Border" Color="#40C0C0C0"/>
+	<SolidColorBrush x:Key="Button.Disabled.Background" Color="#404040"/>
+	<SolidColorBrush x:Key="Button.Disabled.Border" Color="#40C0C0C0"/>
+	<SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+	<Style TargetType="{x:Type Button}">
+		<Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+		<Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+		<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Padding" Value="1"/>
+		<Setter Property="TextBlock.Foreground" Value="#D0D0D0"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+						<ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsDefaulted" Value="true">
+							<Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+						</Trigger>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+							<Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="true">
+							<Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+							<Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="false">
+							<Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+							<Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+							<Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</ResourceDictionary>
